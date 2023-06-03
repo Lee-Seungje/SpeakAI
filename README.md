@@ -5,5 +5,5 @@
 run the development server:
 
 ```bash
-pnpm dev
+package-manager(pnpm) dev
 ```
