@@ -99,7 +99,7 @@ const AudioRecord = () => {
       data: JSON.stringify(requestJson),
       headers: {
         "Content-Type": "application/json",
-        Authorization: "0ee40cb3-146d-4031-abf1-2dc1e6acabfb",
+        Authorization: process.env.NEXT_PUBLIC_API_MAIN_KEY,
       },
     });
     const responseData = res.data.return_object.recognized;
