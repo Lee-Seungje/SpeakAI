@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import axios from "axios";
 import styled from "@emotion/styled";
 
 const AudioRecord = () => {
@@ -91,8 +92,28 @@ const AudioRecord = () => {
         type: "audio",
       });
       setSoundFile(sound);
-      console.log(sound);
     }
+  };
+
+  const sendFile = async () => {
+    const requestJson = {
+      argument: {
+        language_code: "korean",
+        audio: base64String,
+      },
+    };
+
+    const res = await axios({
+      url: "http://aiopen.etri.re.kr:8000/WiseASR/Recognition",
+      method: "POST",
+      data: JSON.stringify(requestJson),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "0ee40cb3-146d-4031-abf1-2dc1e6acabfb",
+      },
+    });
+    const responseData = res.data.return_object;
+    console.log(responseData);
   };
 
   const onClick = () => {
@@ -101,7 +122,6 @@ const AudioRecord = () => {
       if (event?.target?.result && typeof event?.target?.result == "string") {
         const base64String = event.target.result.split(",")[1];
         setBase64String(base64String);
-        console.log(`${base64String}`);
       }
     };
     if (soundFile) {
@@ -114,7 +134,8 @@ const AudioRecord = () => {
       <Btn onClick={onRec ? onRecAudio : offRecAudio}>녹음</Btn>
       <Btn onClick={onSubmitAudioFile}>결과 확인</Btn>
       <AudioPlay controls src={realAudioUrl}></AudioPlay>
-      <Btn onClick={onClick}>제출</Btn>
+      <Btn onClick={onClick}>base64인코딩</Btn>
+      <Btn onClick={sendFile}>진짜 제출</Btn>
     </Container>
   );
 };
