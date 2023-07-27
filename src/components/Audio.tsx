@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import styled from "@emotion/styled";
 
+import { useRouter } from "next/navigation";
+
 const AudioRecord = () => {
+  const router = useRouter();
+
   const [stream, setStream] = useState<MediaStream>();
   const [media, setMedia] = useState<MediaRecorder>();
   const [onRec, setOnRec] = useState(true);
@@ -98,8 +102,13 @@ const AudioRecord = () => {
         Authorization: "0ee40cb3-146d-4031-abf1-2dc1e6acabfb",
       },
     });
-    const responseData = res.data.return_object;
+    const responseData = res.data.return_object.recognized;
+    alert(responseData);
     console.log(responseData);
+    switch (responseData[0]) {
+      case "I":
+        router.push(`/mypage/${responseData}`);
+    }
   };
 
   const onClick = () => {
