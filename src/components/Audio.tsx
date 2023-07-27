@@ -10,6 +10,8 @@ const AudioRecord = () => {
   const [analyser, setAnalyser] = useState<ScriptProcessorNode>();
   const [audioUrl, setAudioUrl] = useState<Blob>();
   const [realAudioUrl, setRealAudoUrl] = useState<string>("");
+  const [base64String, setBase64String] = useState<string>("");
+  const [soundFile, setSoundFile] = useState<File>();
 
   const onRecAudio = () => {
     // 음원정보를 담은 노드를 생성하거나 음원을 실행또는 디코딩 시키는 일을 한다
@@ -88,7 +90,22 @@ const AudioRecord = () => {
         lastModified: new Date().getTime(),
         type: "audio",
       });
+      setSoundFile(sound);
       console.log(sound);
+    }
+  };
+
+  const onClick = () => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event?.target?.result && typeof event?.target?.result == "string") {
+        const base64String = event.target.result.split(",")[1];
+        setBase64String(base64String);
+        console.log(`${base64String}`);
+      }
+    };
+    if (soundFile) {
+      reader.readAsDataURL(soundFile);
     }
   };
 
@@ -97,6 +114,7 @@ const AudioRecord = () => {
       <Btn onClick={onRec ? onRecAudio : offRecAudio}>녹음</Btn>
       <Btn onClick={onSubmitAudioFile}>결과 확인</Btn>
       <AudioPlay controls src={realAudioUrl}></AudioPlay>
+      <Btn onClick={onClick}>제출</Btn>
     </Container>
   );
 };
