@@ -8,12 +8,25 @@ import Image from "next/image";
 
 import { css } from "@emotion/react";
 
+const Dances = [
+  "/ChaDance.gif",
+  "/Dance.gif",
+  "/LeeDance.gif",
+  "/ParkDance.gif",
+  "/YoonDance.gif",
+  "/YoonDance2.gif",
+  "/YoonDance3.gif",
+  "/JungDance.gif",
+  "/ChaDance.gif",
+  "/Dance.gif",
+];
+
 const NewAudio = () => {
   const [value, setValue] = useState<string>("");
   const [isJump, setIsJump] = useState<boolean>(false);
   const [isTurn, setIsTurn] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
-  const [isJong, setIsJong] = useState<boolean>(false);
+  const [image, setImage] = useState<string>("/LeeJW.jpg");
   window.SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -50,15 +63,32 @@ const NewAudio = () => {
         break;
       }
       case "최종인": {
-        setIsJong(true);
+        setImage("/ChaJI.png");
         break;
       }
       case "채종인": {
-        setIsJong(true);
+        setImage("/ChaJI.png");
         break;
       }
       case "이정우": {
-        setIsJong(false);
+        setImage("/LeeJW.jpg");
+        break;
+      }
+      case "정민석": {
+        setImage("/JungMS.jpg");
+        break;
+      }
+      case "윤태빈": {
+        setImage("/YoonTB.jpg");
+        break;
+      }
+      case "박주홍": {
+        setImage("/dalit.gif");
+        break;
+      }
+      case "춤춰": {
+        const rand = Math.floor(Math.random() * 10);
+        setImage(Dances[rand]);
         break;
       }
     }
@@ -75,7 +105,7 @@ const NewAudio = () => {
       </BTN>
       <Image
         alt="캐릭터"
-        src={isJong ? "/ChaJI.png" : "/LeeJW.jpg"}
+        src={image}
         width={300}
         height={400}
         css={css`
@@ -105,4 +135,7 @@ const Container = styled.div`
 const BTN = styled.div`
   font-size: 100px;
   cursor: pointer;
+  background-color: silver;
+  border-radius: 20px;
+  margin-bottom: 30px;
 `;
