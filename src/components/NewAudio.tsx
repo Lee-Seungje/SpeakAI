@@ -1,9 +1,16 @@
+/** @jsxImportSource @emotion/react */
+
 import React, { useState } from "react";
 
 import styled from "@emotion/styled";
 
-const Example = () => {
+import Image from "next/image";
+
+import { css } from "@emotion/react";
+
+const NewAudio = () => {
   const [value, setValue] = useState<string>("");
+  const [isJump, setIsJump] = useState<boolean>(false);
   window.SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -16,7 +23,6 @@ const Example = () => {
       .map((results: any) => results[0].transcript)
       .join("");
     setValue(texts);
-    console.log(texts);
   };
 
   return (
@@ -26,13 +32,25 @@ const Example = () => {
         onMouseDown={() => recognition.start()}
         onMouseUp={() => recognition.stop()}
       >
-        🎤
+        🎤 MouseDown Here!
       </BTN>
+      <Image
+        alt="캐릭터"
+        src="/LeeJW.jpg"
+        width={300}
+        height={400}
+        css={
+          isJump &&
+          css`
+            position: relative;
+          `
+        }
+      />
     </Container>
   );
 };
 
-export default Example;
+export default NewAudio;
 
 const Container = styled.div`
   width: 100vw;

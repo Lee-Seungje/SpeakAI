@@ -129,6 +129,7 @@ const AudioRecord = () => {
       <AudioPlay controls src={realAudioUrl}></AudioPlay>
       <Btn onClick={onClick}>base64인코딩</Btn>
       <Btn onClick={sendFile}>진짜 제출</Btn>
+      <h1 onClick={() => router.push("/new-audio")}>더 나은 버전으로 이동</h1>
     </Container>
   );
 };
