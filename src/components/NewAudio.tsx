@@ -91,6 +91,10 @@ const NewAudio = () => {
         setImage(Dances[rand]);
         break;
       }
+      case "최종인 여친": {
+        setImage("/ChaGirl.webp");
+        break;
+      }
     }
   };
 
