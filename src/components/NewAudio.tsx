@@ -21,6 +21,12 @@ const Dances = [
   "/Dance.gif",
 ];
 
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
 const NewAudio = () => {
   const [value, setValue] = useState<string>("");
   const [isJump, setIsJump] = useState<boolean>(false);
@@ -29,79 +35,80 @@ const NewAudio = () => {
   const [image, setImage] = useState<string>("/LeeJW.jpg");
   const [isHammer, setIsHammer] = useState<boolean>(false);
 
-  // @ts-ignore: Property 'SpeechRecognition' does not exist on type 'Window & typeof globalThis'.
-  const recognition = new (window.SpeechRecognition || // @ts-ignore: Property 'SpeechRecognition' does not exist on type 'Window & typeof globalThis'.
-    window.webkitSpeechRecognition)();
-  recognition.interimResults = true;
-  recognition.lang = "ko-KR";
+  if (typeof window !== "undefined") {
+    const recognition = new (window.SpeechRecognition ||
+      window.webkitSpeechRecognition)();
+    recognition.interimResults = true;
+    recognition.lang = "ko-KR";
 
-  recognition.onresult = function (e: any) {
-    let texts = Array.from(e.results)
-      .map((results: any) => results[0].transcript)
-      .join("");
-    setValue(texts);
+    recognition.onresult = function (e: any) {
+      let texts = Array.from(e.results)
+        .map((results: any) => results[0].transcript)
+        .join("");
+      setValue(texts);
 
-    switch (texts) {
-      case "점프": {
-        setIsJump(true);
-        setTimeout(() => {
-          setIsJump(false);
-        }, 1000);
-        break;
+      switch (texts) {
+        case "점프": {
+          setIsJump(true);
+          setTimeout(() => {
+            setIsJump(false);
+          }, 1000);
+          break;
+        }
+        case "돌아": {
+          setIsTurn(true);
+          setTimeout(() => {
+            setIsTurn(false);
+          }, 1000);
+          break;
+        }
+        case "오른쪽": {
+          setIsRight(true);
+          setTimeout(() => {
+            setIsRight(false);
+          }, 1000);
+          break;
+        }
+        case "최종인": {
+          setImage("/ChaJI.png");
+          break;
+        }
+        case "채종인": {
+          setImage("/ChaJI.png");
+          break;
+        }
+        case "이정우": {
+          setImage("/LeeJW.jpg");
+          break;
+        }
+        case "정민석": {
+          setImage("/JungMS.jpg");
+          break;
+        }
+        case "윤태빈": {
+          setImage("/YoonTB.jpg");
+          break;
+        }
+        case "박주홍": {
+          setImage("/dalit.gif");
+          break;
+        }
+        case "춤춰": {
+          const rand = Math.floor(Math.random() * 10);
+          setImage(Dances[rand]);
+          break;
+        }
+        case "최종인 여친": {
+          setImage("/ChaGirl.webp");
+          break;
+        }
+        case "망치": {
+          setIsHammer((prev) => !prev);
+          break;
+        }
       }
-      case "돌아": {
-        setIsTurn(true);
-        setTimeout(() => {
-          setIsTurn(false);
-        }, 1000);
-        break;
-      }
-      case "오른쪽": {
-        setIsRight(true);
-        setTimeout(() => {
-          setIsRight(false);
-        }, 1000);
-        break;
-      }
-      case "최종인": {
-        setImage("/ChaJI.png");
-        break;
-      }
-      case "채종인": {
-        setImage("/ChaJI.png");
-        break;
-      }
-      case "이정우": {
-        setImage("/LeeJW.jpg");
-        break;
-      }
-      case "정민석": {
-        setImage("/JungMS.jpg");
-        break;
-      }
-      case "윤태빈": {
-        setImage("/YoonTB.jpg");
-        break;
-      }
-      case "박주홍": {
-        setImage("/dalit.gif");
-        break;
-      }
-      case "춤춰": {
-        const rand = Math.floor(Math.random() * 10);
-        setImage(Dances[rand]);
-        break;
-      }
-      case "최종인 여친": {
-        setImage("/ChaGirl.webp");
-        break;
-      }
-      case "망치": {
-        setIsHammer((prev) => !prev);
-        break;
-      }
-    }
-  };
+    };
+  }
 
   return (
     <Container>
