@@ -28,10 +28,10 @@ const NewAudio = () => {
   const [isRight, setIsRight] = useState<boolean>(false);
   const [image, setImage] = useState<string>("/LeeJW.jpg");
   const [isHammer, setIsHammer] = useState<boolean>(false);
-  window.SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  let recognition = new SpeechRecognition();
+  // @ts-ignore: Property 'SpeechRecognition' does not exist on type 'Window & typeof globalThis'.
+  const recognition = new (window.SpeechRecognition || // @ts-ignore: Property 'SpeechRecognition' does not exist on type 'Window & typeof globalThis'.
+    window.webkitSpeechRecognition)();
   recognition.interimResults = true;
   recognition.lang = "ko-KR";
 
