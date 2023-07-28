@@ -27,6 +27,7 @@ const NewAudio = () => {
   const [isTurn, setIsTurn] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
   const [image, setImage] = useState<string>("/LeeJW.jpg");
+  const [isHammer, setIsHammer] = useState<boolean>(false);
   window.SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -95,6 +96,10 @@ const NewAudio = () => {
         setImage("/ChaGirl.webp");
         break;
       }
+      case "망치": {
+        setIsHammer((prev) => !prev);
+        break;
+      }
     }
   };
 
@@ -121,6 +126,9 @@ const NewAudio = () => {
           transform: rotate(${isTurn && "180deg"});
         `}
       />
+      {isHammer && (
+        <HammerIMG src="/hammer.gif" alt="hammer" width={300} height={400} />
+      )}
     </Container>
   );
 };
@@ -128,6 +136,7 @@ const NewAudio = () => {
 export default NewAudio;
 
 const Container = styled.div`
+  position: relative;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -142,4 +151,10 @@ const BTN = styled.div`
   background-color: silver;
   border-radius: 20px;
   margin-bottom: 30px;
+`;
+
+const HammerIMG = styled(Image)`
+  position: absolute;
+  top: 100px;
+  transform: rotate(-100deg);
 `;
