@@ -39,78 +39,76 @@ const NewAudio = () => {
 
   let recognition: SpeechRecognition;
 
-  useEffect(() => {
-    recognition = new (window.SpeechRecognition ||
-      window.webkitSpeechRecognition)();
-    recognition.interimResults = true;
-    recognition.lang = "ko-KR";
-    recognition.onresult = function (e: any) {
-      let texts = Array.from(e.results)
-        .map((results: any) => results[0].transcript)
-        .join("");
-      setValue(texts);
+  recognition = new (window.SpeechRecognition ||
+    window.webkitSpeechRecognition)();
+  recognition.interimResults = true;
+  recognition.lang = "ko-KR";
+  recognition.onresult = function (e: any) {
+    let texts = Array.from(e.results)
+      .map((results: any) => results[0].transcript)
+      .join("");
+    setValue(texts);
 
-      switch (texts) {
-        case "점프": {
-          setIsJump(true);
-          setTimeout(() => {
-            setIsJump(false);
-          }, 1000);
-          break;
-        }
-        case "돌아": {
-          setIsTurn(true);
-          setTimeout(() => {
-            setIsTurn(false);
-          }, 1000);
-          break;
-        }
-        case "오른쪽": {
-          setIsRight(true);
-          setTimeout(() => {
-            setIsRight(false);
-          }, 1000);
-          break;
-        }
-        case "최종인": {
-          setImage("/ChaJI.png");
-          break;
-        }
-        case "채종인": {
-          setImage("/ChaJI.png");
-          break;
-        }
-        case "이정우": {
-          setImage("/LeeJW.jpg");
-          break;
-        }
-        case "정민석": {
-          setImage("/JungMS.jpg");
-          break;
-        }
-        case "윤태빈": {
-          setImage("/YoonTB.jpg");
-          break;
-        }
-        case "박주홍": {
-          setImage("/dalit.gif");
-          break;
-        }
-        case "춤춰": {
-          const rand = Math.floor(Math.random() * 10);
-          setImage(Dances[rand]);
-          break;
-        }
-        case "망치": {
-          setIsHammer(true);
-          setTimeout(() => {
-            setIsHammer(false);
-          }, 2000);
-          break;
-        }
+    switch (texts) {
+      case "점프": {
+        setIsJump(true);
+        setTimeout(() => {
+          setIsJump(false);
+        }, 1000);
+        break;
       }
-    };
-  });
+      case "돌아": {
+        setIsTurn(true);
+        setTimeout(() => {
+          setIsTurn(false);
+        }, 1000);
+        break;
+      }
+      case "오른쪽": {
+        setIsRight(true);
+        setTimeout(() => {
+          setIsRight(false);
+        }, 1000);
+        break;
+      }
+      case "최종인": {
+        setImage("/ChaJI.png");
+        break;
+      }
+      case "채종인": {
+        setImage("/ChaJI.png");
+        break;
+      }
+      case "이정우": {
+        setImage("/LeeJW.jpg");
+        break;
+      }
+      case "정민석": {
+        setImage("/JungMS.jpg");
+        break;
+      }
+      case "윤태빈": {
+        setImage("/YoonTB.jpg");
+        break;
+      }
+      case "박주홍": {
+        setImage("/dalit.gif");
+        break;
+      }
+      case "춤춰": {
+        const rand = Math.floor(Math.random() * 10);
+        setImage(Dances[rand]);
+        break;
+      }
+      case "망치": {
+        setIsHammer(true);
+        setTimeout(() => {
+          setIsHammer(false);
+        }, 2000);
+        break;
+      }
+    }
+  };
 
   return (
     <Container>
