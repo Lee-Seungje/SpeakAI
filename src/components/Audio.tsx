@@ -26,14 +26,16 @@ const Container = styled.div`
 const Btn = styled.div`
   width: 400px;
   height: 70px;
+  border-radius: 30px;
+
   background-color: silver;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   cursor: pointer;
-  border-radius: 30px;
+
   color: #191919;
   font-size: 30px;
 `;
-
-const AudioPlay = styled.audio``;
