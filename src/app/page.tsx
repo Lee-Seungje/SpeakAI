@@ -1,7 +1,7 @@
 "use client";
 
-import { Audio } from "@/components";
+import { NewAudio } from "@/components";
 
 export default function Home() {
-  return <Audio />;
+  return <NewAudio />;
 }

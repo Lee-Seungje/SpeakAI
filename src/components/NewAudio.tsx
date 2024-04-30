@@ -37,88 +37,100 @@ const NewAudio = () => {
   const [image, setImage] = useState<string>("/LeeJW.jpg");
   const [isHammer, setIsHammer] = useState<boolean>(false);
 
-  let recognition: SpeechRecognition;
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(
+    null
+  );
 
-  recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)();
-  recognition.interimResults = true;
-  recognition.lang = "ko-KR";
-  recognition.onresult = function (e: any) {
-    let texts = Array.from(e.results)
-      .map((results: any) => results[0].transcript)
-      .join("");
-    setValue(texts);
+  useEffect(() => {
+    setRecognition(
+      new (window.SpeechRecognition || window.webkitSpeechRecognition)()
+    );
+  }, []);
 
-    switch (texts) {
-      case "점프": {
-        setIsJump(true);
-        setTimeout(() => {
-          setIsJump(false);
-        }, 1000);
-        break;
-      }
-      case "돌아": {
-        setIsTurn(true);
-        setTimeout(() => {
-          setIsTurn(false);
-        }, 1000);
-        break;
-      }
-      case "오른쪽": {
-        setIsRight(true);
-        setTimeout(() => {
-          setIsRight(false);
-        }, 1000);
-        break;
-      }
-      case "최종인": {
-        setImage("/ChaJI.png");
-        break;
-      }
-      case "채종인": {
-        setImage("/ChaJI.png");
-        break;
-      }
-      case "이정우": {
-        setImage("/LeeJW.jpg");
-        break;
-      }
-      case "정민석": {
-        setImage("/JungMS.jpg");
-        break;
-      }
-      case "윤태빈": {
-        setImage("/YoonTB.jpg");
-        break;
-      }
-      case "박주홍": {
-        setImage("/dalit.gif");
-        break;
-      }
-      case "춤춰": {
-        const rand = Math.floor(Math.random() * 10);
-        setImage(Dances[rand]);
-        break;
-      }
-      case "망치": {
-        setIsHammer(true);
-        setTimeout(() => {
-          setIsHammer(false);
-        }, 2000);
-        break;
-      }
+  useEffect(() => {
+    if (recognition) {
+      recognition.interimResults = true;
+      recognition.lang = "ko-KR";
+      recognition.onresult = function (e: any) {
+        let texts = Array.from(e.results)
+          .map((results: any) => results[0].transcript)
+          .join("");
+        setValue(texts);
+
+        switch (texts) {
+          case "점프": {
+            setIsJump(true);
+            setTimeout(() => {
+              setIsJump(false);
+            }, 1000);
+            break;
+          }
+          case "돌아": {
+            setIsTurn(true);
+            setTimeout(() => {
+              setIsTurn(false);
+            }, 1000);
+            break;
+          }
+          case "오른쪽": {
+            setIsRight(true);
+            setTimeout(() => {
+              setIsRight(false);
+            }, 1000);
+            break;
+          }
+          case "최종인": {
+            setImage("/ChaJI.png");
+            break;
+          }
+          case "채종인": {
+            setImage("/ChaJI.png");
+            break;
+          }
+          case "이정우": {
+            setImage("/LeeJW.jpg");
+            break;
+          }
+          case "정민석": {
+            setImage("/JungMS.jpg");
+            break;
+          }
+          case "윤태빈": {
+            setImage("/YoonTB.jpg");
+            break;
+          }
+          case "박주홍": {
+            setImage("/dalit.gif");
+            break;
+          }
+          case "춤춰": {
+            const rand = Math.floor(Math.random() * 10);
+            setImage(Dances[rand]);
+            break;
+          }
+          case "망치": {
+            setIsHammer(true);
+            setTimeout(() => {
+              setIsHammer(false);
+            }, 2000);
+            break;
+          }
+        }
+      };
     }
-  };
+  }, [recognition]);
 
   return (
     <Container>
       <h1>{value}</h1>
-      <BTN
-        onMouseDown={() => recognition.start()}
-        onMouseUp={() => recognition.stop()}
-      >
-        🎤 MouseDown Here!
-      </BTN>
+      {recognition && (
+        <BTN
+          onMouseDown={() => recognition.start()}
+          onMouseUp={() => recognition.stop()}
+        >
+          🎤 MouseDown Here!
+        </BTN>
+      )}
       <Image
         alt="캐릭터"
         src={image}
@@ -129,7 +141,6 @@ const NewAudio = () => {
           position: relative;
           transform: translateY(${isJump && "-300px"});
           transform: translateX(${isRight && "300px"});
-          /* transform: translateX(${isRight && "300px"}); */
           transform: rotate(${isTurn && "180deg"});
         `}
       />
