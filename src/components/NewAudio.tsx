@@ -10,6 +10,10 @@ import Image from "next/image";
 
 import { css } from "@emotion/react";
 
+import OpenAI from "openai";
+
+import { toast } from "react-toastify";
+
 const Dances = [
   "/ChaDance.gif",
   "/Dance.gif",
@@ -29,6 +33,19 @@ declare global {
   }
 }
 
+const debounce = <F extends (...args: any[]) => void>(
+  func: F,
+  delay: number
+) => {
+  let timerId: NodeJS.Timeout;
+  return (...args: Parameters<F>): void => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
 const NewAudio = () => {
   const [value, setValue] = useState<string>("");
   const [isJump, setIsJump] = useState<boolean>(false);
@@ -41,17 +58,29 @@ const NewAudio = () => {
     null
   );
 
-  const debounce = <F extends (...args: any[]) => void>(
-    func: F,
-    delay: number
-  ) => {
-    let timerId: NodeJS.Timeout;
-    return (...args: Parameters<F>): void => {
-      clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
+  const key = process.env.NEXT_PUBLIC_OPENAI_KEY;
+
+  const openai = new OpenAI({
+    apiKey: key,
+    dangerouslyAllowBrowser: true,
+  });
+
+  const getAIAnswer = async (question: string) => {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `${question}`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    const answer = completion.choices[0].message.content;
+
+    if (answer) {
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
+    }
   };
 
   useEffect(() => {
@@ -72,8 +101,6 @@ const NewAudio = () => {
           .map((results: any) => results[0].transcript)
           .join("");
         setValue(texts);
-
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(texts));
 
         switch (texts) {
           case "점프": {
@@ -132,6 +159,9 @@ const NewAudio = () => {
               setIsHammer(false);
             }, 2000);
             break;
+          }
+          default: {
+            getAIAnswer(texts);
           }
         }
       }, 1000);
