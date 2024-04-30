@@ -14,6 +14,8 @@ import OpenAI from "openai";
 
 import { toast } from "react-toastify";
 
+import { tailChase } from "ldrs";
+
 const Dances = [
   "/ChaDance.gif",
   "/Dance.gif",
@@ -61,6 +63,8 @@ const NewAudio = () => {
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(
     null
   );
+
+  tailChase.register();
 
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -186,13 +190,32 @@ const NewAudio = () => {
     <Container>
       <Modal ref={dialog}>
         <ModalWrapper>
-          <Texts>{answer}</Texts>
-          <Form method="dialog">
-            <Button onClick={() => window.speechSynthesis.cancel()}>
-              답변 중지
-            </Button>
-            <Button>닫기</Button>
-          </Form>
+          {isLoading ? (
+            <>
+              <h1
+                style={{
+                  color: "black",
+                }}
+              >
+                로딩중
+              </h1>
+              <l-tail-chase
+                size="200"
+                speed="1.75"
+                color="green"
+              ></l-tail-chase>
+            </>
+          ) : (
+            <>
+              <Texts>{answer}</Texts>
+              <Form method="dialog">
+                <Button onClick={() => window.speechSynthesis.cancel()}>
+                  답변 중지
+                </Button>
+                <Button>닫기</Button>
+              </Form>
+            </>
+          )}
         </ModalWrapper>
       </Modal>
       <h1>{value}</h1>
@@ -236,12 +259,16 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const BTN = styled.div`
+const BTN = styled.button`
   font-size: 100px;
   cursor: pointer;
   background-color: silver;
   border-radius: 20px;
   margin-bottom: 30px;
+
+  :active {
+    background-color: red;
+  }
 `;
 
 const HammerIMG = styled(Image)`
@@ -253,6 +280,13 @@ const HammerIMG = styled(Image)`
 const Modal = styled.dialog`
   border-radius: 6px;
   padding: 0;
+
+  position: absolute;
+  left: calc(50% - 250px);
+  top: calc(20%);
+  ::backdrop {
+    background-color: rgba(0, 0, 0, 20%);
+  }
 `;
 
 const ModalWrapper = styled.div`
