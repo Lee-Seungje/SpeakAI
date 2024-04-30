@@ -41,21 +41,39 @@ const NewAudio = () => {
     null
   );
 
+  const debounce = <F extends (...args: any[]) => void>(
+    func: F,
+    delay: number
+  ) => {
+    let timerId: NodeJS.Timeout;
+    return (...args: Parameters<F>): void => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
   useEffect(() => {
     setRecognition(
       new (window.SpeechRecognition || window.webkitSpeechRecognition)()
     );
+
+    new SpeechSynthesisUtterance();
   }, []);
 
   useEffect(() => {
     if (recognition) {
       recognition.interimResults = true;
       recognition.lang = "ko-KR";
-      recognition.onresult = function (e: any) {
+
+      const handleSpeechResult = debounce((e: any) => {
         let texts = Array.from(e.results)
           .map((results: any) => results[0].transcript)
           .join("");
         setValue(texts);
+
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(texts));
 
         switch (texts) {
           case "점프": {
@@ -116,6 +134,10 @@ const NewAudio = () => {
             break;
           }
         }
+      }, 1000);
+
+      recognition.onresult = function (e: any) {
+        handleSpeechResult(e);
       };
     }
   }, [recognition]);
