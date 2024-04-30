@@ -12,9 +12,7 @@ import { css } from "@emotion/react";
 
 import OpenAI from "openai";
 
-import { toast } from "react-toastify";
-
-import { tailChase } from "ldrs";
+import { Oval } from "react-loader-spinner";
 
 const Dances = [
   "/ChaDance.gif",
@@ -63,8 +61,6 @@ const NewAudio = () => {
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(
     null
   );
-
-  tailChase.register();
 
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -199,11 +195,7 @@ const NewAudio = () => {
               >
                 로딩중
               </h1>
-              <l-tail-chase
-                size="200"
-                speed="1.75"
-                color="green"
-              ></l-tail-chase>
+              <Oval height="80" width="80" color="green" ariaLabel="loading" />
             </>
           ) : (
             <>
