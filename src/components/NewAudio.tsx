@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styled from "@emotion/styled";
 
@@ -54,9 +54,15 @@ const NewAudio = () => {
   const [image, setImage] = useState<string>("/LeeJW.jpg");
   const [isHammer, setIsHammer] = useState<boolean>(false);
 
+  const [answer, setAnswer] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(
     null
   );
+
+  const dialog = useRef<HTMLDialogElement>(null);
 
   const key = process.env.NEXT_PUBLIC_OPENAI_KEY;
 
@@ -66,6 +72,7 @@ const NewAudio = () => {
   });
 
   const getAIAnswer = async (question: string) => {
+    await setIsLoading(true);
     const completion = await openai.chat.completions.create({
       messages: [
         {
@@ -75,10 +82,12 @@ const NewAudio = () => {
       ],
       model: "gpt-3.5-turbo",
     });
+    await setIsLoading(false);
 
     const answer = completion.choices[0].message.content;
 
     if (answer) {
+      setAnswer(answer);
       window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
     }
   };
@@ -161,6 +170,7 @@ const NewAudio = () => {
             break;
           }
           default: {
+            dialog.current?.showModal();
             getAIAnswer(texts);
           }
         }
@@ -174,6 +184,17 @@ const NewAudio = () => {
 
   return (
     <Container>
+      <Modal ref={dialog}>
+        <ModalWrapper>
+          <Texts>{answer}</Texts>
+          <Form method="dialog">
+            <Button onClick={() => window.speechSynthesis.cancel()}>
+              답변 중지
+            </Button>
+            <Button>닫기</Button>
+          </Form>
+        </ModalWrapper>
+      </Modal>
       <h1>{value}</h1>
       {recognition && (
         <BTN
@@ -227,4 +248,42 @@ const HammerIMG = styled(Image)`
   position: absolute;
   top: 100px;
   transform: rotate(-100deg);
+`;
+
+const Modal = styled.dialog`
+  border-radius: 6px;
+  padding: 0;
+`;
+
+const ModalWrapper = styled.div`
+  width: 500px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+
+  background-color: white;
+  border-radius: 6px;
+`;
+
+const Texts = styled.p`
+  font-size: 16px;
+  color: black;
+`;
+
+const Form = styled.form`
+  display: flex;
+  gap: 20px;
+`;
+
+const Button = styled.button`
+  width: 200px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;
