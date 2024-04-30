@@ -200,11 +200,11 @@ const NewAudio = () => {
           ) : (
             <>
               <Texts>{answer}</Texts>
-              <Form method="dialog">
+              <Form>
                 <Button onClick={() => window.speechSynthesis.cancel()}>
                   답변 중지
                 </Button>
-                <Button>닫기</Button>
+                <Button onClick={() => dialog.current?.close()}>닫기</Button>
               </Form>
             </>
           )}
@@ -299,7 +299,7 @@ const Texts = styled.p`
   color: black;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
   display: flex;
   gap: 20px;
 `;
