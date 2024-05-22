@@ -62,6 +62,8 @@ const NewAudio = () => {
     null
   );
 
+  const [isQuestioning, setIsQuestioning] = useState<boolean>(false);
+
   const dialog = useRef<HTMLDialogElement>(null);
 
   const key = process.env.NEXT_PUBLIC_OPENAI_KEY;
@@ -98,6 +100,12 @@ const NewAudio = () => {
     );
 
     new SpeechSynthesisUtterance();
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -181,6 +189,22 @@ const NewAudio = () => {
       };
     }
   }, [recognition]);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter" && recognition) {
+      if (isQuestioning) {
+        recognition.stop();
+        setIsQuestioning(false);
+        return;
+      }
+      recognition.start();
+      setIsQuestioning(true);
+    } else if (e.key === " ") {
+      dialog.current?.close();
+    } else if (e.key === "Backspace") {
+      window.speechSynthesis.cancel();
+    }
+  };
 
   return (
     <Container>
