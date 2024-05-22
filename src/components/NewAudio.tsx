@@ -62,7 +62,8 @@ const NewAudio = () => {
     null
   );
 
-  const [isQuestioning, setIsQuestioning] = useState<boolean>(false);
+  const [isQuestioning, setIsQuestioning] = useState(false);
+  const isQuestioningRef = useRef(isQuestioning);
 
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -93,20 +94,6 @@ const NewAudio = () => {
       window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
     }
   };
-
-  useEffect(() => {
-    setRecognition(
-      new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-    );
-
-    new SpeechSynthesisUtterance();
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   useEffect(() => {
     if (recognition) {
@@ -190,21 +177,43 @@ const NewAudio = () => {
     }
   }, [recognition]);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter" && recognition) {
-      if (isQuestioning) {
-        recognition.stop();
-        setIsQuestioning(false);
-        return;
+  useEffect(() => {
+    const newRecognition = new (window.SpeechRecognition ||
+      window.webkitSpeechRecognition)();
+    setRecognition(newRecognition);
+
+    new SpeechSynthesisUtterance();
+  }, []);
+
+  useEffect(() => {
+    isQuestioningRef.current = isQuestioning;
+  }, [isQuestioning]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        dialog.current?.close();
+      } else if (e.key === " ") {
+        if (isQuestioningRef.current) {
+          recognition?.stop();
+          setIsQuestioning(false);
+          console.log("a");
+        } else {
+          recognition?.start();
+          setIsQuestioning(true);
+          console.log("b");
+        }
+      } else if (e.key === "Backspace") {
+        window.speechSynthesis.cancel();
       }
-      recognition.start();
-      setIsQuestioning(true);
-    } else if (e.key === " ") {
-      dialog.current?.close();
-    } else if (e.key === "Backspace") {
-      window.speechSynthesis.cancel();
-    }
-  };
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [recognition]);
 
   return (
     <Container>
@@ -234,6 +243,7 @@ const NewAudio = () => {
           )}
         </ModalWrapper>
       </Modal>
+      {isQuestioning && <h1>질문을 받고있어요...</h1>}
       <h1>{value}</h1>
       {recognition && (
         <BTN
