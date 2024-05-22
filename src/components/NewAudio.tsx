@@ -51,7 +51,7 @@ const NewAudio = () => {
   const [isJump, setIsJump] = useState<boolean>(false);
   const [isTurn, setIsTurn] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("/LeeJW.jpg");
+  const [image, setImage] = useState<string>("/Default.png");
   const [isHammer, setIsHammer] = useState<boolean>(false);
 
   const [answer, setAnswer] = useState<string>("");
@@ -222,7 +222,7 @@ const NewAudio = () => {
       <Image
         alt="캐릭터"
         src={image}
-        width={300}
+        width={350}
         height={400}
         css={css`
           transition: all ease 1s;
