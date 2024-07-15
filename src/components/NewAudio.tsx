@@ -75,6 +75,7 @@ const NewAudio = () => {
   });
 
   const getAIAnswer = async (question: string) => {
+    if (isLoading) return;
     await setIsLoading(true);
     const completion = await openai.chat.completions.create({
       messages: [
@@ -197,11 +198,9 @@ const NewAudio = () => {
         if (isQuestioningRef.current) {
           recognition?.stop();
           setIsQuestioning(false);
-          console.log("a");
         } else {
           recognition?.start();
           setIsQuestioning(true);
-          console.log("b");
         }
       } else if (e.key === "Backspace") {
         window.speechSynthesis.cancel();
