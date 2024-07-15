@@ -51,7 +51,7 @@ const NewAudio = () => {
   const [isJump, setIsJump] = useState<boolean>(false);
   const [isTurn, setIsTurn] = useState<boolean>(false);
   const [isRight, setIsRight] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("/LeeJW.jpg");
+  const [image, setImage] = useState<string>("/Default.png");
   const [isHammer, setIsHammer] = useState<boolean>(false);
 
   const [answer, setAnswer] = useState<string>("");
@@ -61,6 +61,9 @@ const NewAudio = () => {
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(
     null
   );
+
+  const [isQuestioning, setIsQuestioning] = useState(false);
+  const isQuestioningRef = useRef(isQuestioning);
 
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -72,6 +75,7 @@ const NewAudio = () => {
   });
 
   const getAIAnswer = async (question: string) => {
+    if (isLoading) return;
     await setIsLoading(true);
     const completion = await openai.chat.completions.create({
       messages: [
@@ -91,14 +95,6 @@ const NewAudio = () => {
       window.speechSynthesis.speak(new SpeechSynthesisUtterance(answer));
     }
   };
-
-  useEffect(() => {
-    setRecognition(
-      new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-    );
-
-    new SpeechSynthesisUtterance();
-  }, []);
 
   useEffect(() => {
     if (recognition) {
@@ -182,6 +178,42 @@ const NewAudio = () => {
     }
   }, [recognition]);
 
+  useEffect(() => {
+    const newRecognition = new (window.SpeechRecognition ||
+      window.webkitSpeechRecognition)();
+    setRecognition(newRecognition);
+
+    new SpeechSynthesisUtterance();
+  }, []);
+
+  useEffect(() => {
+    isQuestioningRef.current = isQuestioning;
+  }, [isQuestioning]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        dialog.current?.close();
+      } else if (e.key === " ") {
+        if (isQuestioningRef.current) {
+          recognition?.stop();
+          setIsQuestioning(false);
+        } else {
+          recognition?.start();
+          setIsQuestioning(true);
+        }
+      } else if (e.key === "Backspace") {
+        window.speechSynthesis.cancel();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [recognition]);
+
   return (
     <Container>
       <Modal ref={dialog}>
@@ -210,6 +242,7 @@ const NewAudio = () => {
           )}
         </ModalWrapper>
       </Modal>
+      {isQuestioning && <h1>질문을 받고있어요...</h1>}
       <h1>{value}</h1>
       {recognition && (
         <BTN
@@ -222,7 +255,7 @@ const NewAudio = () => {
       <Image
         alt="캐릭터"
         src={image}
-        width={300}
+        width={350}
         height={400}
         css={css`
           transition: all ease 1s;
