@@ -153,6 +153,54 @@ const NewAudio = () => {
             setImage("/dalit.gif");
             break;
           }
+          case "최장우": {
+            setImage("/jang.jpeg");
+            break;
+          }
+          case "최장": {
+            setImage("/jang.jpeg");
+            break;
+          }
+          case "김주은": {
+            setImage("/juen.png");
+            break;
+          }
+          case "주은": {
+            setImage("/juen.png");
+            break;
+          }
+          case "희성": {
+            setImage("/js.png");
+            break;
+          }
+          case "신희성": {
+            setImage("/js.png");
+            break;
+          }
+          case "경주": {
+            setImage("/gg.png");
+            break;
+          }
+          case "주경주": {
+            setImage("/gg.png");
+            break;
+          }
+          case "재균": {
+            setImage("/jg.png");
+            break;
+          }
+          case "김재균": {
+            setImage("/jg.png");
+            break;
+          }
+          case "상혁": {
+            setImage("/sh.png");
+            break;
+          }
+          case "정상혁": {
+            setImage("/sh.png");
+            break;
+          }
           case "춤춰": {
             const rand = Math.floor(Math.random() * 10);
             setImage(Dances[rand]);
