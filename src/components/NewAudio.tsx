@@ -201,6 +201,34 @@ const NewAudio = () => {
             setImage("/sh.png");
             break;
           }
+          case "방가온": {
+            setImage("/bgo.png");
+            break;
+          }
+          case "방가": {
+            setImage("/bgo.png");
+            break;
+          }
+          case "이승제": {
+            setImage("/lsj.png");
+            break;
+          }
+          case "가온": {
+            setImage("/bgo.png");
+            break;
+          }
+          case "승제": {
+            setImage("/lsj.png");
+            break;
+          }
+          case "승재": {
+            setImage("/lsj.png");
+            break;
+          }
+          case "이승재": {
+            setImage("/lsj.png");
+            break;
+          }
           case "춤춰": {
             const rand = Math.floor(Math.random() * 10);
             setImage(Dances[rand]);
